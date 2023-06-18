@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [ staging, trying, master ]
+    branches: [ master, 'dev/*' ]
   pull_request:
 
 name: Continuous integration
@@ -28,9 +28,5 @@ jobs:
           override: true
       - name: Install all Rust targets for ${{ matrix.rust }}
         run: rustup target install --toolchain=${{ matrix.rust }} riscv32imac-unknown-none-elf
-      - name: Install riscv gcc
-        run: sudo apt-get update && sudo apt-get install -y gcc-riscv64-unknown-elf
       - name: Run CI script for riscv32imac-unknown-none-elf under ${{ matrix.rust }}
         run: cargo check --target riscv32imac-unknown-none-elf
-      - name: Check blobs
-        run: ./check-blobs.sh

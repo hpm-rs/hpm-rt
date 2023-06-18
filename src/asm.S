@@ -1,16 +1,3 @@
-#if __riscv_xlen == 64
-# define STORE    sd
-# define LOAD     ld
-# define LOG_REGBYTES 3
-#else
-# define STORE    sw
-# define LOAD     lw
-# define LOG_REGBYTES 2
-#endif
-#define REGBYTES (1 << LOG_REGBYTES)
-
-#define HPM_BOOTHEADER_TAG 0xbf
-
 # /* following symbols exported from linker script */
 .extern __app_load_addr__
 .extern __app_offset__
@@ -31,7 +18,7 @@ __nor_cfg__:
 */
 .section .boot_header, "a"
 header:
-    .byte HPM_BOOTHEADER_TAG // tag, must be '0xbf'
+    .byte 0xbf               // tag, must be '0xbf'
     .byte 0x10               // header version
     .2byte 0x90              // header length
     .4byte 0                 // flags
@@ -67,38 +54,15 @@ fw_info:
 
 _start:
     /* Jump to the absolute address defined by the linker script. */
-    // for 32bit
-    .if __riscv_xlen == 32
     lui ra, %hi(_abs_start)
     jr %lo(_abs_start)(ra)
-    .endif
-
-    // for 64bit
-    .if __riscv_xlen == 64
-.option push
-.option norelax // to prevent an unsupported R_RISCV_ALIGN relocation from being generated
-1:
-    auipc ra, %pcrel_hi(1f)
-    ld ra, %pcrel_lo(1b)(ra)
-    jr ra
-    .align  3
-1:
-    .dword _abs_start
-.option pop
-    .endif
 
 _abs_start:
     .cfi_startproc
     .cfi_undefined ra
 
-    #ifdef SMODE
-    csrw sie, 0     // interrupt disable 
-    csrw sip, 0     // no pending interrupts
-    #else
     csrw mie, 0
     csrw mip, 0
-    #endif
-    
 
     li  x1, 0
     li  x2, 0
@@ -135,33 +99,16 @@ _abs_start:
     la gp, __global_pointer$
     .option pop
 
-    #ifdef SMODE
-    // there is no equivalent of mhartid in supervisor mode.
-    // instead, the hartid is passed as paramter by SMODE
-    mv t2, a0   
-    #else 
     csrr t2, mhartid
-    #endif
     lui t0, %hi(_max_hart_id)
     add t0, t0, %lo(_max_hart_id)
-    bgtu t2, t0, abort
+    bgtu t2, t0, 0
 
     // Allocate stacks
     la sp, _stack_start
     lui t0, %hi(_hart_stack_size)
     add t0, t0, %lo(_hart_stack_size)
-#ifdef __riscv_mul
     mul t0, t2, t0
-#else
-    beqz t2, 2f  // Jump if single-hart
-    mv t1, t2
-    mv t3, t0
-1:
-    add t0, t0, t3
-    addi t1, t1, -1
-    bnez t1, 1b
-2:
-#endif
     sub sp, sp, t0
 
     // Set frame pointer
@@ -181,54 +128,44 @@ _abs_start:
 .global default_start_trap
 
 default_start_trap:
-    addi sp, sp, -16*REGBYTES
+    addi sp, sp, -16*4
 
-    STORE ra, 0*REGBYTES(sp)
-    STORE t0, 1*REGBYTES(sp)
-    STORE t1, 2*REGBYTES(sp)
-    STORE t2, 3*REGBYTES(sp)
-    STORE t3, 4*REGBYTES(sp)
-    STORE t4, 5*REGBYTES(sp)
-    STORE t5, 6*REGBYTES(sp)
-    STORE t6, 7*REGBYTES(sp)
-    STORE a0, 8*REGBYTES(sp)
-    STORE a1, 9*REGBYTES(sp)
-    STORE a2, 10*REGBYTES(sp)
-    STORE a3, 11*REGBYTES(sp)
-    STORE a4, 12*REGBYTES(sp)
-    STORE a5, 13*REGBYTES(sp)
-    STORE a6, 14*REGBYTES(sp)
-    STORE a7, 15*REGBYTES(sp)
+    sw ra, 0*4(sp)
+    sw t0, 1*4(sp)
+    sw t1, 2*4(sp)
+    sw t2, 3*4(sp)
+    sw t3, 4*4(sp)
+    sw t4, 5*4(sp)
+    sw t5, 6*4(sp)
+    sw t6, 7*4(sp)
+    sw a0, 8*4(sp)
+    sw a1, 9*4(sp)
+    sw a2, 10*4(sp)
+    sw a3, 11*4(sp)
+    sw a4, 12*4(sp)
+    sw a5, 13*4(sp)
+    sw a6, 14*4(sp)
+    sw a7, 15*4(sp)
 
     add a0, sp, zero
     jal ra, _start_trap_rust
 
-    LOAD ra, 0*REGBYTES(sp)
-    LOAD t0, 1*REGBYTES(sp)
-    LOAD t1, 2*REGBYTES(sp)
-    LOAD t2, 3*REGBYTES(sp)
-    LOAD t3, 4*REGBYTES(sp)
-    LOAD t4, 5*REGBYTES(sp)
-    LOAD t5, 6*REGBYTES(sp)
-    LOAD t6, 7*REGBYTES(sp)
-    LOAD a0, 8*REGBYTES(sp)
-    LOAD a1, 9*REGBYTES(sp)
-    LOAD a2, 10*REGBYTES(sp)
-    LOAD a3, 11*REGBYTES(sp)
-    LOAD a4, 12*REGBYTES(sp)
-    LOAD a5, 13*REGBYTES(sp)
-    LOAD a6, 14*REGBYTES(sp)
-    LOAD a7, 15*REGBYTES(sp)
+    lw ra, 0*4(sp)
+    lw t0, 1*4(sp)
+    lw t1, 2*4(sp)
+    lw t2, 3*4(sp)
+    lw t3, 4*4(sp)
+    lw t4, 5*4(sp)
+    lw t5, 6*4(sp)
+    lw t6, 7*4(sp)
+    lw a0, 8*4(sp)
+    lw a1, 9*4(sp)
+    lw a2, 10*4(sp)
+    lw a3, 11*4(sp)
+    lw a4, 12*4(sp)
+    lw a5, 13*4(sp)
+    lw a6, 14*4(sp)
+    lw a7, 15*4(sp)
 
-    addi sp, sp, 16*REGBYTES
-    #ifdef SMODE
-    sret
-    #else
+    addi sp, sp, 16*4
     mret
-    #endif
-
-/* Make sure there is an abort when linking */
-.section .text.abort
-.globl abort
-abort:
-    j abort
