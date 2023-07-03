@@ -10,11 +10,8 @@ keywords = ["riscv", "runtime", "startup"]
 license = "MIT"
 edition = "2021"
 
-[features]
-default = []
-flash-xip = []
-
 [dependencies]
+cfg-if = "1.0.0"
 r0 = "1.0.0"
 riscv = "0.10"
 riscv-rt-macros = { path = "macros", version = "0.2.0" }
