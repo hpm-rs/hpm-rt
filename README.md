@@ -1,21 +1,22 @@
-[![crates.io](https://img.shields.io/crates/d/riscv-rt.svg)](https://crates.io/crates/riscv-rt)
-[![crates.io](https://img.shields.io/crates/v/riscv-rt.svg)](https://crates.io/crates/riscv-rt)
-[![Build Status](https://travis-ci.org/rust-embedded/riscv-rt.svg?branch=master)](https://travis-ci.org/rust-embedded/riscv-rt)
+# hpm-rt
 
-# `riscv-rt`
+[![crates.io](https://img.shields.io/crates/d/hpm-rt.svg)](https://crates.io/crates/hpm-rt)
+[![crates.io](https://img.shields.io/crates/v/hpm-rt.svg)](https://crates.io/crates/hpm-rt)
+[![GitHub Actions](https://github.com/hpm-rs/hpm-rt/actions/workflows/ci.yaml/badge.svg)](https://github.com/hpm-rs/hpm-rt/actions/workflows/ci.yaml)
 
-> Minimal runtime / startup for RISC-V CPU's.
+Minimal runtime / startup for HPMicro MCUs.
 
-This project is developed and maintained by the [RISC-V team][team].
+## Documentation
 
-## [Documentation](https://docs.rs/crate/riscv-rt)
+The document can be found at [docs.rs](https://docs.rs/crate/hpm-rt).
 
 ## Minimum Supported Rust Version (MSRV)
 
-This crate is guaranteed to compile on stable Rust 1.59 and up. It *might*
-compile with older versions but that may change in any new patch release.
+1.59.0
 
 ## License
+
+### [riscv-rt]
 
 Copyright 2018-2022 [RISC-V team][team]
 
@@ -31,11 +32,5 @@ OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
 TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF
 THIS SOFTWARE.
 
-## Code of Conduct
-
-Contribution to this crate is organized under the terms of the [Rust Code of
-Conduct][CoC], the maintainer of this crate, the [RISC-V team][team], promises
-to intervene to uphold that code of conduct.
-
-[CoC]: CODE_OF_CONDUCT.md
+[riscv-rt]: https://github.com/rust-embedded/riscv-rt
 [team]: https://github.com/rust-embedded/wg#the-risc-v-team
