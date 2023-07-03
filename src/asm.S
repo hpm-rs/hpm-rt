@@ -1,23 +1,13 @@
-# /* following symbols exported from linker script */
+/* following symbols exported from linker script */
 .extern __app_load_addr__
 .extern __app_offset__
 .extern __fw_size__
 
 /*
-  XPI NOR Configuration Option
-*/
-.section .nor_cfg_option, "a"
-__nor_cfg__:
-    .4byte 0xfcf90001
-    .4byte 0x00000007
-    .4byte 0
-    .4byte 0
-
-/*
     FW Container Header
 */
 .section .boot_header, "a"
-header:
+_boot_header:
     .byte 0xbf               // tag, must be '0xbf'
     .byte 0x10               // header version
     .2byte 0x90              // header length
@@ -31,7 +21,7 @@ header:
 /*
     FW Info Table
 */
-fw_info:
+_fw_info:
     .4byte __app_offset__     // offset to boot_header start
     .4byte __fw_size__        // firmware size
     .4byte 0                  // firmware flags
@@ -39,7 +29,7 @@ fw_info:
     .4byte __app_load_addr__  // app load address
     .4byte 0                  // reserved
     .4byte _start             // application entry point
-    .zero 64 + 32           // hash value and initial vector
+    .zero 64 + 32             // hash value and initial vector
 
 /*
     Entry point of all programs (_start).
@@ -108,7 +98,15 @@ _abs_start:
     la sp, _stack_start
     lui t0, %hi(_hart_stack_size)
     add t0, t0, %lo(_hart_stack_size)
-    mul t0, t2, t0
+
+    beqz t2, 2f  // Jump if single-hart
+    mv t1, t2
+    mv t3, t0
+1:
+    add t0, t0, t3
+    addi t1, t1, -1
+    bnez t1, 1b
+2:
     sub sp, sp, t0
 
     // Set frame pointer

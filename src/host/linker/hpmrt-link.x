@@ -1,4 +1,3 @@
-PROVIDE(_stext = ORIGIN(REGION_TEXT));
 PROVIDE(_stack_start = ORIGIN(REGION_STACK) + LENGTH(REGION_STACK));
 PROVIDE(_max_hart_id = 0);
 PROVIDE(_hart_stack_size = 2K);
@@ -40,14 +39,9 @@ PROVIDE(_mp_hook = default_mp_hook);
 */
 PROVIDE(_start_trap = default_start_trap);
 
+
 SECTIONS
 {
-  .text.dummy (NOLOAD) :
-  {
-    /* This section is intended to make _stext address work */
-    . = ABSOLUTE(_stext);
-  } > REGION_TEXT
-
   .text _stext :
   {
     /* Put reset handler first in .text section so it ends up as the entry */
@@ -59,7 +53,7 @@ SECTIONS
     *(.trap.rust);
 
     *(.text .text.*);
-  } > REGION_TEXT
+  } >REGION_TEXT AT> REGION_LOAD_TEXT
 
   .rodata : ALIGN(4)
   {
@@ -70,7 +64,7 @@ SECTIONS
        This is required by LLD to ensure the LMA of the following .data
        section will have the correct alignment. */
     . = ALIGN(4);
-  } > REGION_RODATA
+  } > REGION_RODATA AT> REGION_LOAD_RODATA
 
   .data : ALIGN(4)
   {
@@ -82,7 +76,9 @@ SECTIONS
     *(.data .data.*);
     . = ALIGN(4);
     _edata = .;
-  } > REGION_DATA AT > REGION_RODATA
+  } > REGION_DATA AT> REGION_LOAD_DATA
+
+  __fw_size__ = _sidata - _stext + SIZEOF(.data);
 
   .bss (NOLOAD) :
   {
@@ -170,5 +166,3 @@ supported. If you are linking to C code compiled using the `gcc` crate
 then modify your build script to compile the C code _without_ the
 -fPIC flag. See the documentation of the `gcc::Config.fpic` method for
 details.");
-
-/* Do not exceed this mark in the error messages above                                    | */

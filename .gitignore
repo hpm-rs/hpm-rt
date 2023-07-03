@@ -4,3 +4,4 @@ bin/*.after
 bin/*.before
 bin/*.o
 .DS_Store
+.vscode/
