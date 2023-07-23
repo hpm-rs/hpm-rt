@@ -355,6 +355,12 @@ impl RuntimeBuilder {
         self
     }
 
+    /// Specify where to place the stack region
+    pub fn stack(mut self, memory: MemoryType) -> Self {
+        self.stack.memory = memory;
+        self
+    }
+
     /// Commit the runtime configuration.
     ///
     /// # Errors
