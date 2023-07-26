@@ -1,6 +1,6 @@
 [package]
 name = "hpm-rt"
-version = "0.0.0"
+version = "0.1.0"
 rust-version = "1.59"
 repository = "https://github.com/hpm-rs/hpm-rt"
 authors = ["JasonTan <tfx2001@outlook.com>"]
