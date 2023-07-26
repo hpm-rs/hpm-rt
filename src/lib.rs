@@ -48,7 +48,6 @@
 cfg_if::cfg_if! {
     if #[cfg(all(target_arch = "riscv32", target_os = "none"))] {
         mod target;
-        /// L1-Cache control
         pub mod cache;
 
         pub use target::{entry, Interrupt};

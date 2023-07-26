@@ -63,9 +63,9 @@ pub enum QuadIOEnableSequence {
 /// Flash I/O Voltage
 #[derive(Clone, Copy)]
 pub enum IOVoltage {
-    /// Voltage 3.3V
+    /// IO voltage 3.3V
     Voltage3v3,
-    /// Voltage 1.8V
+    /// IO voltage 1.8V
     Voltage1v8,
 }
 
