@@ -11,11 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
-- This CHANGELOG file to hopefully serve as an evolving example of a
-  standardized open source project CHANGELOG.
-- CNAME file to enable GitHub Pages custom domain.
-- README now contains answers to common questions about CHANGELOGs.
-- Good examples and basic guidelines, including proper date formatting.
-- Counter-examples: "What makes unicorns cry?".
+- Bootable image generation
+- L1-Cache control for HPMicro MCUs (**UNTESTED**)
+- `HPM6700/6400` device family definition
 
 [0.1.0]: https://github.com/hpm-rs/hpm-rt/releases/tag/v0.1.0
