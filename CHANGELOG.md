@@ -15,4 +15,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - L1-Cache control for HPMicro MCUs (**UNTESTED**)
 - `HPM6700/6400` device family definition
 
-[0.1.0]: https://github.com/hpm-rs/hpm-rt/releases/tag/v0.1.0
+[0.1.0]: https://github.com/hpm-rs/hpm-rt/compare/fork...v0.1.0
