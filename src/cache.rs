@@ -1,6 +1,11 @@
-#![allow(unused)]
-#![allow(non_camel_case_types)]
+//! L1-Cache control
+//!
+//! # WARNING
+//!
+//! Tests needed.
 
+#![allow(non_camel_case_types)]
+#![allow(unused)]
 use core::arch::asm;
 
 /// cache line size is 64B
