@@ -1,4 +1,5 @@
 use core::arch::global_asm;
+use core::ptr::addr_of_mut;
 
 use riscv::register::{mcause as xcause, mhartid, mtvec as xtvec, mtvec::TrapMode as xTrapMode};
 
@@ -49,8 +50,8 @@ pub unsafe extern "C" fn start_rust(a0: usize, a1: usize, a2: usize) -> ! {
     if _mp_hook(hartid) {
         __pre_init();
 
-        r0::zero_bss(&mut _sbss, &mut _ebss);
-        r0::init_data(&mut _sdata, &mut _edata, &_sidata);
+        r0::zero_bss(addr_of_mut!(_sbss), addr_of_mut!(_ebss));
+        r0::init_data(addr_of_mut!(_sdata), addr_of_mut!(_edata), &_sidata);
     }
 
     // TODO: Enable FPU when available

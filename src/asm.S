@@ -95,7 +95,7 @@ _abs_start:
     bgtu t2, t0, 0
 
     // Allocate stacks
-    la sp, _stack_start
+    la sp, _sstack
     lui t0, %hi(_hart_stack_size)
     add t0, t0, %lo(_hart_stack_size)
 

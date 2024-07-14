@@ -9,6 +9,8 @@ use std::{env, fs};
 use super::device::{Device, Memory, MemoryType};
 use super::linker;
 
+const DEFAULT_STACK_SIZE: usize = 8 * 1024;
+
 /// Flash type
 #[derive(Clone, Copy)]
 pub enum FlashType {
@@ -241,10 +243,11 @@ pub struct RuntimeBuilder {
     bss: Region,
     stack: Region,
     heap: Region,
+    stack_size: usize,
 }
 
 impl RuntimeBuilder {
-    const DEFAULT_LINKER_SCRIPT_NAME: &str = "hpmrt-link.ld";
+    const DEFAULT_LINKER_SCRIPT_NAME: &'static str = "hpmrt-link.ld";
 
     /// Create [`RuntimeBuilder`] that boot from XPI.
     pub fn from_flash(family: Device, xpi_config: XpiNorConfigurationOption) -> Self {
@@ -276,6 +279,7 @@ impl RuntimeBuilder {
                 memory: MemoryType::Dlm,
                 load_memory: None,
             },
+            stack_size: DEFAULT_STACK_SIZE,
         };
 
         builder
@@ -310,6 +314,7 @@ impl RuntimeBuilder {
                 memory: MemoryType::Dlm,
                 load_memory: None,
             },
+            stack_size: DEFAULT_STACK_SIZE,
         }
     }
 
@@ -356,8 +361,9 @@ impl RuntimeBuilder {
     }
 
     /// Specify where to place the stack region
-    pub fn stack(mut self, memory: MemoryType) -> Self {
+    pub fn stack(mut self, memory: MemoryType, size: usize) -> Self {
         self.stack.memory = memory;
+        self.stack_size = size;
         self
     }
 
@@ -451,6 +457,8 @@ impl RuntimeBuilder {
         linker::region_alias(self.text.load_memory.unwrap(), "LOAD_TEXT", writer)?;
         linker::region_alias(self.rodata.load_memory.unwrap(), "LOAD_RODATA", writer)?;
         linker::region_alias(self.data.load_memory.unwrap(), "LOAD_DATA", writer)?;
+
+        writeln!(writer, "PROVIDE(_stack_size = {});", self.stack_size)?;
 
         if let Some(xpi_nor_conf_info) = self.xpi_nor_conf_info {
             let mut bytes: [u32; 3] = [0; 3];
