@@ -1,4 +1,3 @@
-PROVIDE(_stack_start = ORIGIN(REGION_STACK) + LENGTH(REGION_STACK));
 PROVIDE(_max_hart_id = 0);
 PROVIDE(_hart_stack_size = 2K);
 PROVIDE(_heap_size = 0);
@@ -101,7 +100,7 @@ SECTIONS
   .stack (NOLOAD) :
   {
     _estack = .;
-    . = ABSOLUTE(_stack_start);
+    . += _stack_size;
     _sstack = .;
   } > REGION_STACK
 
@@ -114,8 +113,10 @@ SECTIONS
     KEEP(*(.got .got.*));
   }
 
-  .eh_frame (INFO) : { KEEP(*(.eh_frame)) }
-  .eh_frame_hdr (INFO) : { *(.eh_frame_hdr) }
+  /* discard section */
+  /DISCARD/ : {
+    *(.eh_frame)
+  }
 }
 
 /* Do not exceed this mark in the error messages above                                    | */
