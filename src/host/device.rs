@@ -98,7 +98,7 @@ pub struct Device {
 pub mod Family {
     use super::{Device, MemoryType};
 
-    /// HPM6700/6400 etc.
+    /// HPM6700/6400 series.
     pub const HPM6700_6400: Device = Device {
         ilm: memory!(MemoryType::Ilm, 0x0000_0000, 256 KBytes),
         dlm: memory!(MemoryType::Dlm, 0x0008_0000, 256 KBytes),
@@ -106,6 +106,18 @@ pub mod Family {
         axi_sram_1: memory!(MemoryType::AxiSram1, 0x0110_0000, 512 KBytes),
         ahb_sram: memory!(MemoryType::AhbSram, 0xF030_0000, 32 KBytes),
         apb_sram: memory!(MemoryType::ApbSram, 0xF40F_0000, 8 KBytes),
+        xpi0: memory!(MemoryType::Xpi0, 0x8000_0000, 0 KBytes),
+        xpi1: memory!(MemoryType::Xpi1, 0x9000_0000, 0 KBytes),
+    };
+
+    /// HPM6300 series.
+    pub const HPM6300: Device = Device {
+        ilm: memory!(MemoryType::Ilm, 0x0000_0000, 128 KBytes),
+        dlm: memory!(MemoryType::Dlm, 0x0008_0000, 128 KBytes),
+        axi_sram_0: memory!(MemoryType::AxiSram0, 0x0108_0000, 512 KBytes),
+        axi_sram_1: None,
+        ahb_sram: memory!(MemoryType::AhbSram, 0xF030_0000, 32 KBytes),
+        apb_sram: None,
         xpi0: memory!(MemoryType::Xpi0, 0x8000_0000, 0 KBytes),
         xpi1: memory!(MemoryType::Xpi1, 0x9000_0000, 0 KBytes),
     };
