@@ -48,11 +48,18 @@ SECTIONS
     KEEP(*(.init));
     KEEP(*(.init.rust));
     . = ALIGN(4);
-    *(.trap);
-    *(.trap.rust);
-
     *(.text .text.*);
   } >REGION_TEXT AT> REGION_LOAD_TEXT
+
+  .trap : ALIGN(4)
+  {
+    _sitrap = LOADADDR(.trap);
+    _strap = .;
+    *(.trap);
+    *(.trap.rust);
+    . = ALIGN(4);
+    _etrap = .;
+  } >ILM AT> REGION_LOAD_TEXT
 
   .rodata : ALIGN(4)
   {

@@ -20,8 +20,14 @@ extern "C" {
     static mut _edata: u32;
     static mut _sdata: u32;
 
+    // Boundaries of the .trap section
+    static mut _etrap: u32;
+    static mut _strap: u32;
+
     // Initial values of the .data section (stored in Flash)
     static _sidata: u32;
+    // Initial values of the .trap section (stored in Flash)
+    static _sitrap: u32;
 }
 
 /// Rust entry point (_start_rust)
@@ -52,6 +58,7 @@ pub unsafe extern "C" fn start_rust(a0: usize, a1: usize, a2: usize) -> ! {
 
         r0::zero_bss(addr_of_mut!(_sbss), addr_of_mut!(_ebss));
         r0::init_data(addr_of_mut!(_sdata), addr_of_mut!(_edata), &_sidata);
+        r0::init_data(addr_of_mut!(_strap), addr_of_mut!(_etrap), &_sitrap);
     }
 
     // TODO: Enable FPU when available
