@@ -175,7 +175,7 @@ pub fn dcache_invalidate_all() {
 /// Writeback all D-Cache
 pub fn dcache_writeback_all() {
     unsafe {
-        l1c_cctl_cmd(CacheControlCommand::L1D_INVAL_ALL as usize);
+        l1c_cctl_cmd(CacheControlCommand::L1D_WB_ALL as usize);
     }
 }
 
