@@ -41,10 +41,12 @@ PROVIDE(_start_trap = default_start_trap);
 
 SECTIONS
 {
-  .text _stext :
+  .text : ALIGN(4)
   {
     /* Put reset handler first in .text section so it ends up as the entry */
     /* point of the program. */
+    _sitext = LOADADDR(.text);
+    _stext = .;
     KEEP(*(.init));
     KEEP(*(.init.rust));
     . = ALIGN(4);
@@ -84,7 +86,7 @@ SECTIONS
     _edata = .;
   } > REGION_DATA AT> REGION_LOAD_DATA
 
-  __fw_size__ = _sidata - _stext + SIZEOF(.data);
+  __fw_size__ = _sidata - _sitext + SIZEOF(.data);
 
   .bss (NOLOAD) :
   {

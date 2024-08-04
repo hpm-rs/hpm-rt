@@ -285,6 +285,43 @@ impl RuntimeBuilder {
         builder
     }
 
+    /// Create [`RuntimeBuilder`] that has bootheader, allow BootROM load
+    /// firmware from XPI to ILM.
+    pub fn load_from_flash(family: Device, xpi_config: XpiNorConfigurationOption) -> Self {
+        let boot_flash: MemoryType = xpi_config.instance.into();
+        let mut builder = Self {
+            device: family,
+            xpi_nor_conf_info: Some(xpi_config),
+            text: Region {
+                memory: MemoryType::Ilm,
+                load_memory: Some(boot_flash),
+            },
+            rodata: Region {
+                memory: MemoryType::Ilm,
+                load_memory: Some(boot_flash),
+            },
+            data: Region {
+                memory: MemoryType::Dlm,
+                load_memory: Some(boot_flash),
+            },
+            bss: Region {
+                memory: MemoryType::Dlm,
+                load_memory: None,
+            },
+            stack: Region {
+                memory: MemoryType::Dlm,
+                load_memory: None,
+            },
+            heap: Region {
+                memory: MemoryType::Dlm,
+                load_memory: None,
+            },
+            stack_size: DEFAULT_STACK_SIZE,
+        };
+
+        builder
+    }
+
     /// Create [`RuntimeBuilder`] that boot from ILM.
     pub fn from_ram(device: Device) -> Self {
         Self {
@@ -483,9 +520,6 @@ impl RuntimeBuilder {
 
             // Boot header
             linker::output_boot_header(writer)?;
-            writeln!(writer, "PROVIDE(_stext = __app_load_addr__);")?;
-        } else {
-            writeln!(writer, "PROVIDE(_stext = ORIGIN(REGION_TEXT));")?;
         }
 
         let link_x = include_bytes!("linker/hpmrt-link.x");
