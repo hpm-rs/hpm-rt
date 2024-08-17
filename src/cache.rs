@@ -151,7 +151,7 @@ pub fn dcache_enable() {
     if !dcache_is_enabled() {
         unsafe {
             clear_mcache(MCACHE_CTL_DC_WAROUND_MASK);
-            set_mcache(MCACHE_CTL_DPREF_EN_MASK | MCACHE_CTL_DC_EN_MASK);
+            set_mcache(MCACHE_CTL_DC_EN_MASK);
         }
     }
 }
